@@ -1,6 +1,3 @@
-from ftplib import parse150
-from xml.etree.ElementPath import prepare_child
-
 from inputs import *
 
 class Player:
@@ -152,6 +149,7 @@ class Player:
         input('> ')
 
     def criar_player(self):
+        print('')
         print('Crie seu Personagem!')
         print('')
         print(f'Defina o seu Nickname:')
@@ -163,8 +161,7 @@ class Player:
         print('[1] Masculino')
         print('[2] Feminino')
         print('')
-        sexo = input_int('> ')
-        sexo_p = definir_sexo(sexo)
+        sexo = definir_sexo()
         print('')
         print(f'Defina o sua Raça:')
         print('')
@@ -176,71 +173,97 @@ class Player:
         esc1 = input_int('> ')
         raca_p = p_racas[esc1 - 1]
         print('')
-        if raca_p == 'Humano':
-            print('')
-            print('Defina sua Classe:')
-            print('')
-            x1 = 0
-            for i in human_c:
-                x1 += 1
-                print(f'[{x1}] {i}')
-            print('')
-            esc2 = input_int('> ')
-            clas_p = human_c[esc2 - 1]
-            print('')
-            if clas_p == human_c[esc2 - 1]:
-                p1 = Player(name, [], [], 130, 40, 14, 8, 7, raca_p, sub_raca_p, clas_p, sexo_p)
-                return p1
-
-        else:
-            print('Error')
+        sub_raca_ = definir_sub_raca(raca_p)
+        print('')
+        c_ = definir_classe()
 
 
-def definir_classe(r1):
+
+def definir_sub_raca(r1):
+    x1 = 0
     if r1 == 'Humano':
+        return 'Humano'
+
+    elif r1 == 'Raça Feral':
         print('')
-        print('Defina sua Classe:')
+        print('Defina sua Sub-Classe:')
         print('')
-        x1 = 0
-        for i in human_c:
+        for i in b1:
             x1 += 1
             print(f'[{x1}] {i}')
         print('')
-        esc2 = input_int('> ')
-        clas_p = human_c[esc2 - 1]
+        sub_c = input_int('> ')
+        sub_b1 = b1[sub_c - 1]
+        print('')
+        return sub_b1
+
+    elif r1 == 'Infernais':
+        print('')
+        print('Defina sua Sub-Classe:')
+        print('')
+        for i in d1:
+            x1 += 1
+            print(f'[{x1}] {i}')
+        print('')
+        sub_c = input_int('> ')
+        sub_d1 = d1[sub_c - 1]
+        print('')
+        return sub_d1
+
+    elif r1 == 'Goblin':
+        return 'Goblin'
+    else:
+        print('Defina sua Sub-Raça')
         print('')
 
+def definir_classe():
+    while True:
+        print('')
+        print(f'Defina o sua Classe:')
+        print('')
+        x1 = 0
+        for i in r_ch:
+            x1 += 1
+            print(f'[{x1}] {i}')
+        print('')
+        cl_ = input_int('> ')
+        print('')
 
-def definir_sexo(s1):
-    while 1:
-        if s1 == 1:
+def definir_sexo():
+    while True:
+        sexo = input_int('> ')
+        print('')
+        if sexo == 1:
             return 'Masculuino'
-        elif s1 == 2:
+        elif sexo == 2:
             return 'Feminino'
         else:
+            print('Defina seu Sexo')
             print('')
-            print('Insira o numero de correto')
-            print('')
-            pass
 
 def exibir():
     pl = Player.criar_player(None)
-    pl.apresentar_player()
 
+# Raças:
+p_racas = ['Humano','Raça Feral','Infernais','Goblin']
 
+# Sub Raças:
+beast_sr = ['Weretiger','Lobisomem','Minotauro','Sátiro','Lizardfolk']
+b1 = beast_sr
 
-p_racas = ['Humano','Homem Féra','Demonio','Goblin']
+demon_sr = ['Succubo','Incubus','Diabretes/IMP','Demoniacos','Specter','Flame Demon']
+d1 = demon_sr
 
-human_c = ['Cavaleiro','Mercenário','Paladino','Espadachim','Berserker']
-h1 = human_c
+# Classes:
+r_ch = ['Bardo','Mago','Paladino','Cavaleiro','Arqueiro']
+r_cb = ['Ladino','Feiticeiro','Berserker','Druida','Hunter']
+r_cd = ['Bruxo','Dark Knight','Invocador','Mentalista','Sanguinário']
+r_cg = ['Assasino','Artífice','Bruxo','Arqueiro','Ladino']
 
-beast_c = ['Weretiger','Lobisomem','Minotauro','Sátiro','Lizardfolk']
-b1 = beast_c
+# Secretas:
+#    Human:    Necromante
+#    Feral:    Centauro
+#    Infernal: Lord_Demon
+#    Goblin:   General Gobli
 
-demon_c = ['Succubo','Incubus','Diabretes/IMP','Shadowfiend','Specter','Flame Demon']
-d1 = demon_c
-
-goblin_c = ['Saqueador','Arqueiro','Gerreiro','Engenheiro','Assasino']
-g1 = goblin_c
-
-#exibir()
+exibir()

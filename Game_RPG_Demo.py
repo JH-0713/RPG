@@ -1,6 +1,6 @@
 from time import sleep
 from random import randint
-from Jogador import Player,exibir,definr_classe
+from Jogador import Player,exibir
 # JOGO
 print("     ██   ██████   ██████    ██████       ██████   ██████   ██████ ".center(210))
 print("     ██  ██    ██  ██       ██    ██      ██   ██  ██   ██  ██     ".center(210))
@@ -19,11 +19,7 @@ print('')
 print('')
 print('')
 print('')
-if esc1 == 1:
 
-elif esc1 == 3:
-    print('Saindo...')
-    print('')
 
 
 
