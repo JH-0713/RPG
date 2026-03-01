@@ -1,7 +1,9 @@
+from wsgiref.validate import validator
+
 from inputs import *
 
 class Player:
-    def __init__(self, nickname,abilidades,itens,hp = 100,mana=50,ataque = 0,agilidade = 0,inteligencia = 0,raca = 'Humano',sub_raca = 'Nenhuma',classe = 'Paladino',sexo='Masculuino',lv = 1,exp_atual = 0,exp_total = 1000):
+    def __init__(self, nickname,habilidades,itens,vida_atual = 100,vida_total = 100,mana_atual = 50,mana_total = 50,ataque = 0,agilidade = 0,inteligencia = 0,raca = 'Humano',sub_raca = 'Nenhuma',classe = 'Paladino',sexo='Masculino',lv = 1,exp_atual = 0,exp_total = 1000):
         # Nome:
         self.nickname = nickname
 
@@ -17,41 +19,19 @@ class Player:
         self.exp_total = exp_total
 
         # Status
-        self.hp = hp
-        self.mana = mana
+        self.vida_total = vida_total
+        self.vida_atual = vida_atual
+
+        self.mana_atual = mana_atual
+        self.mana_total = mana_total
+
         self.ataque = ataque
         self.agilidade = agilidade
         self.inteligencia = inteligencia
 
-        # lista de Abilidades e Itens
-        self.abilidades = abilidades
+        # lista de Habilidades e Itens
+        self.habilidades = habilidades
         self.itens = itens
-
-    def apresentar_player(self):
-        # Nome
-        print(f'Nickname: {self.nickname}')
-
-        # Definições
-        print(f'Raça: {self.raca}')
-        print(f'Sub raça: {self.sub_raca}')
-        print(f'Class: {self.classe}')
-        print(f'Sexo: {self.sexo}')
-
-        # XP
-        print(f'Level: {self.level}')
-        print(f'Experiencia: {self.exp_atual}/{self.exp_total}')
-
-        # Status
-        print(f'Vida: {self.hp}')
-        print(f'Ataque: {self.ataque}')
-        print(f'agilidadelidade: {self.agilidade}')
-        print(f'Inteligencia: {self.inteligencia}')
-        print(f'Mana: {self.mana}')
-        print('-' * 30)
-
-        # lista de Abilidades e Itens
-        print(f'Abilidades: {self.abilidades}')
-        print(f'Iventario: {self.itens}')
 
     def abrir_menu(self,pl_):
         while True:
@@ -59,7 +39,7 @@ class Player:
             print('Menu:')
             print('')
             print('[1] Status')
-            print('[2] Skills')
+            print('[2] Habilidades')
             print('[3] Abrir Iventario')
             print('[0] Fechar Menu')
             print('')
@@ -67,7 +47,7 @@ class Player:
             if esc1 == 1:
                 pl_.abrir_status()
             elif esc1 == 2:
-                pl_.abrir_skills(self.abilidades)
+                pl_.abrir_skills(self.habilidades)
             elif esc1 == 3:
                 pl_.abrir_inventario(self.itens)
             elif esc1 == 0:
@@ -116,7 +96,10 @@ class Player:
         print(f'{self.classe}')
 
         print('\033[4mVida:\033[0m',end='      ')
-        print(f'{self.hp}')
+        print(f'{self.vida_atual}/{self.vida_total}')
+
+        print('\033[4mMana:\033[0m', end='      ')
+        print(f'{self.mana_atual}/{self.mana_total}')
 
         print('\033[4mSTR:\033[0m', end='       ')
         print(f'{self.ataque}')
@@ -126,9 +109,6 @@ class Player:
 
         print('\033[4mINT:\033[0m', end='       ')
         print(f'{self.inteligencia}')
-
-        print('\033[4mMana:\033[0m',end='      ')
-        print(f'{self.mana}')
 
         print('\033[4mSexo:\033[0m',end='      ')
         print(f'{self.sexo}')
@@ -145,7 +125,7 @@ class Player:
 
     def abrir_skills(self,a1):
         print('')
-        print('Skills:')
+        print('Habilidades:')
         print('')
         x1 = 0
         for i in a1:
@@ -175,14 +155,16 @@ class Player:
         esc1 = input_int('> ')
         raca_p = p_racas[esc1 - 1]
         print('')
-        sub_raca_ = definir_sub_raca(raca_p)
+        sub_raca_ = definir_sub_raca(raca_p,sex_)
         print('')
         c_ = definir_classe(raca_p)
         print('')
-        v1,m1,at1,ag1,i1 = definir_status(raca_p,c_)
-        return Player(name,[],[],v1,m1,at1,ag1,i1,raca_p,sub_raca_,c_,sex_)
+        v1,v2,m1,m2,at1,ag1,i1 = definir_status(raca_p,c_)
+        return Player(name,[],[],v1,v2,m1,m2,at1,ag1,i1,raca_p,sub_raca_,c_,sex_)
 
-def definir_sub_raca(r1):
+
+
+def definir_sub_raca(r1,s1):
     x1 = 0
     if r1 == 'Humano':
         return 'Humano'
@@ -201,17 +183,30 @@ def definir_sub_raca(r1):
         return sub_b1
 
     elif r1 == 'Infernais':
-        print('')
-        print('Defina sua Sub-Classe:')
-        print('')
-        for i in d1:
-            x1 += 1
-            print(f'[{x1}] {i}')
-        print('')
-        sub_c = input_int('> ')
-        sub_d1 = d1[sub_c - 1]
-        print('')
-        return sub_d1
+        if s1 == 'Masculino':
+            print('')
+            print('Defina sua Sub-Classe:')
+            print('')
+            for i in dm1:
+                x1 += 1
+                print(f'[{x1}] {i}')
+            print('')
+            sub_c = input_int('> ')
+            sub_d1 = dm1[sub_c - 1]
+            print('')
+            return sub_d1
+        elif s1 == 'Feminino':
+            print('')
+            print('Defina sua Sub-Classe:')
+            print('')
+            for i in df1:
+                x1 += 1
+                print(f'[{x1}] {i}')
+            print('')
+            sub_c = input_int('> ')
+            sub_d1 = df1[sub_c - 1]
+            print('')
+            return sub_d1
 
     elif r1 == 'Goblin':
         return 'Goblin'
@@ -285,7 +280,7 @@ def definir_sexo():
         sexo = input_int('> ')
         print('')
         if sexo == 1:
-            return 'Masculuino'
+            return 'Masculino'
         elif sexo == 2:
             return 'Feminino'
         else:
@@ -300,21 +295,21 @@ def definir_status(ra1,cl1):
             ataque = 15
             agilidade = 16
             inteligencia = 18
-            return vida,mana,ataque,agilidade,inteligencia
+            return vida,vida,mana,mana,ataque,agilidade,inteligencia
         elif cl1 == 'Mago':
             vida = 100
             mana = 125
             ataque = 12
             agilidade = 11
             inteligencia = 26
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
         elif cl1 == 'Paladino':
             vida = 150
             mana = 75
             ataque = 21
             agilidade = 12
             inteligencia = 15
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Cavaleiro':
             vida = 165
@@ -322,7 +317,7 @@ def definir_status(ra1,cl1):
             ataque = 23
             agilidade = 10
             inteligencia = 10
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Arqueiro':
             vida = 120
@@ -330,7 +325,7 @@ def definir_status(ra1,cl1):
             ataque = 21
             agilidade = 20
             inteligencia = 14
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
     elif ra1 == 'Raça Feral':
         if cl1 == 'Ladino':
@@ -339,7 +334,7 @@ def definir_status(ra1,cl1):
             ataque = 24
             agilidade = 23
             inteligencia = 11
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Feiticeiro':
             vida = 110
@@ -347,7 +342,7 @@ def definir_status(ra1,cl1):
             ataque = 15
             agilidade = 13
             inteligencia = 23
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Berserker':
             vida = 180
@@ -355,7 +350,7 @@ def definir_status(ra1,cl1):
             ataque = 27
             agilidade = 15
             inteligencia = 7
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Druida':
             vida = 135
@@ -363,7 +358,7 @@ def definir_status(ra1,cl1):
             ataque = 17
             agilidade = 14
             inteligencia = 21
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Hunter':
             vida = 140
@@ -371,7 +366,7 @@ def definir_status(ra1,cl1):
             ataque = 23
             agilidade = 19
             inteligencia = 12
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
     elif ra1 == 'Infernais':
         if cl1 == 'Bruxo':
@@ -380,7 +375,7 @@ def definir_status(ra1,cl1):
             ataque = 18
             agilidade = 12
             inteligencia = 24
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Dark Knight':
             vida = 165
@@ -388,7 +383,7 @@ def definir_status(ra1,cl1):
             ataque = 25
             agilidade = 13
             inteligencia = 14
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Invocador':
             vida = 100
@@ -396,7 +391,7 @@ def definir_status(ra1,cl1):
             ataque = 11
             agilidade = 10
             inteligencia = 26
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Mentalista':
             vida = 100
@@ -404,7 +399,7 @@ def definir_status(ra1,cl1):
             ataque = 13
             agilidade = 13
             inteligencia = 27
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Sanguinário':
             vida = 150
@@ -412,7 +407,7 @@ def definir_status(ra1,cl1):
             ataque = 25
             agilidade = 18
             inteligencia = 11
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
     elif ra1 == 'Goblin':
         if cl1 == 'Assasino':
@@ -421,7 +416,7 @@ def definir_status(ra1,cl1):
             ataque = 25
             agilidade = 24
             inteligencia = 12
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Artífice':
             vida = 125
@@ -429,7 +424,7 @@ def definir_status(ra1,cl1):
             ataque = 16
             agilidade = 13
             inteligencia = 25
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Bruxo':
             vida = 105
@@ -437,7 +432,7 @@ def definir_status(ra1,cl1):
             ataque = 17
             agilidade = 13
             inteligencia = 25
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Arqueiro':
             vida = 115
@@ -445,7 +440,7 @@ def definir_status(ra1,cl1):
             ataque = 22
             agilidade = 22
             inteligencia = 14
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
         elif cl1 == 'Ladino':
             vida = 120
@@ -453,7 +448,7 @@ def definir_status(ra1,cl1):
             ataque = 24
             agilidade = 25
             inteligencia = 12
-            return vida, mana, ataque, agilidade, inteligencia
+            return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
 def exibir(pl):
     pl.abrir_menu(pl)
@@ -465,8 +460,10 @@ p_racas = ['Humano','Raça Feral','Infernais','Goblin']
 beast_sr = ['Weretiger','Lobisomem','Minotauro','Sátiro','Lizardfolk']
 b1 = beast_sr
 
-demon_sr = ['Succubo','Incubus','Diabretes/IMP','Demoniacos','Specter','Flame Demon']
-d1 = demon_sr
+demon_smr = ['Incubus','Diabretes/IMP','Demoniacos','Specter','Flame Demon']
+demon_sfr = ['Succubo','Diabretes/IMP','Demoniacos','Specter','Flame Demon']
+dm1 = demon_smr
+df1 = demon_sfr
 
 # Classes:
 r_ch = ['Bardo','Mago','Paladino','Cavaleiro','Arqueiro'] # Vampiro
@@ -479,7 +476,3 @@ r_cg = ['Assasino','Artífice','Bruxo','Arqueiro','Ladino']
 #    Feral:    Centauro
 #    Infernal: Lord_Demon
 #    Goblin:   General Gobli
-
-cria_p = Player.criar_player(None)
-
-exibir(cria_p)
