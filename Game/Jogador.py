@@ -1,9 +1,9 @@
-from wsgiref.validate import validator
 
+from Itens import *
 from inputs import *
 
 class Player:
-    def __init__(self, nickname,habilidades,itens,vida_atual = 100,vida_total = 100,mana_atual = 50,mana_total = 50,ataque = 0,agilidade = 0,inteligencia = 0,raca = 'Humano',sub_raca = 'Nenhuma',classe = 'Paladino',sexo='Masculino',lv = 1,exp_atual = 0,exp_total = 1000):
+    def __init__(self, nickname,habilidades,itens,vida_atual = 100,vida_total = 100,mana_atual = 50,mana_total = 50,ataque = 0,agilidade = 0,inteligencia = 0,raca = 'Humano',sub_raca = 'Nenhuma',classe = 'Paladino',sexo='Masculino',lv = 1,exp_atual = 0,exp_total = 100, dinheiro = 0):
         # Nome:
         self.nickname = nickname
 
@@ -32,6 +32,7 @@ class Player:
         # lista de Habilidades e Itens
         self.habilidades = habilidades
         self.itens = itens
+        self.dinheiro = dinheiro
 
     def abrir_menu(self,pl_):
         while True:
@@ -49,7 +50,7 @@ class Player:
             elif esc1 == 2:
                 pl_.abrir_skills(self.habilidades)
             elif esc1 == 3:
-                pl_.abrir_inventario(self.itens)
+                Itens.info_iten(None,pl_.itens)
             elif esc1 == 0:
                 break
             else:
@@ -58,26 +59,6 @@ class Player:
                 input('> ')
                 print('')
 
-    def abrir_inventario(self,l1):
-        x1 = 0
-        if len(l1) == 0:
-            print('')
-            print('Nenhum Item Encontrado!')
-            print('')
-            print('Clique na tecla [Enter] para Continar:')
-            input('> ')
-            print('')
-        else:
-            print('')
-            print('Selecione o Item:')
-            for i in l1:
-                x1 += 1
-                print(f'[{x1}] {i}')
-            print('-' * 30)
-            print('')
-            item1 = input_int('> ')
-            print('')
-
     def abrir_status(self):
         print('')
         print('Status:')
@@ -85,6 +66,12 @@ class Player:
 
         print(f'\033[4mNome:\033[0m',end='      ')
         print(f'{self.nickname}')
+
+        print('\033[4mDinheiro:\033[0m', end='      ')
+        print(f'{self.dinheiro}')
+
+        print('\033[4mSexo:\033[0m', end='      ')
+        print(f'{self.sexo}')
 
         print('\033[4mRaça:\033[0m', end='      ')
         print(f'{self.raca}')
@@ -110,9 +97,6 @@ class Player:
         print('\033[4mINT:\033[0m', end='       ')
         print(f'{self.inteligencia}')
 
-        print('\033[4mSexo:\033[0m',end='      ')
-        print(f'{self.sexo}')
-
         print('\033[4mLv:\033[0m',end='        ')
         print(f'{self.level}')
 
@@ -137,32 +121,61 @@ class Player:
         input('> ')
 
     def criar_player(self):
-        print('')
-        print('Crie seu Personagem!')
-        print('')
-        print(f'Defina o seu Nickname:')
-        print('')
-        name = input_str('> ')
-        sex_ = definir_sexo()
-        print('')
-        print(f'Defina o sua Raça:')
-        print('')
-        x1 = 0
-        for i in p_racas:
-            x1 += 1
-            print(f'[{x1}] {i}')
-        print('')
-        esc1 = input_int('> ')
-        raca_p = p_racas[esc1 - 1]
-        print('')
-        sub_raca_ = definir_sub_raca(raca_p,sex_)
-        print('')
-        c_ = definir_classe(raca_p)
-        print('')
-        v1,v2,m1,m2,at1,ag1,i1 = definir_status(raca_p,c_)
-        return Player(name,[],[],v1,v2,m1,m2,at1,ag1,i1,raca_p,sub_raca_,c_,sex_)
+        while True:
+            print('')
+            print('Crie seu Personagem!')
+            print('')
+            print(f'Defina o seu Nickname:')
+            print('')
+            name = input_str('> ')
+            sex_ = definir_sexo()
+            print('')
+            print(f'Defina o sua Raça:')
+            print('')
+            x1 = 0
+            for i in p_racas:
+                x1 += 1
+                print(f'[{x1}] {i}')
+            print('')
+            esc1 = input_int('> ')
+            raca_p = p_racas[esc1 - 1]
+            print('')
+            sub_raca_ = definir_sub_raca(raca_p,sex_)
+            print('')
+            c_ = definir_classe(raca_p)
+            print('')
+            v1,v2,m1,m2,at1,ag1,i1 = definir_status(raca_p,c_)
+            print('')
+            print('')
+            mostrar_escolha(name,raca_p,sub_raca_,c_,v1,v2,m1,m2,at1,ag1,i1,sex_,1,0,100)
+            print('')
+            escolha_1 = comfirmar()
+            if escolha_1 == 'sim':
+                return Player(name,[],[],v1,v2,m1,m2,at1,ag1,i1,raca_p,sub_raca_,c_,sex_)
+            elif escolha_1 == 'nao':
+                print('Resetando Criação de Personagem')
+                print('')
+                print('')
 
 
+def comfirmar():
+    while True:
+        print('')
+        print('Deseja Criar este Personagem?')
+        print('')
+        print('[1] Sim')
+        print('[2] Não')
+        print('')
+        es1 = input_int('> ')
+        print('')
+        if es1 == 1:
+            return 'sim'
+        elif es1 == 2:
+            return 'nao'
+        else:
+            print('')
+            print('Resposta Invalida')
+            print('')
 
 def definir_sub_raca(r1,s1):
     x1 = 0
@@ -450,8 +463,49 @@ def definir_status(ra1,cl1):
             inteligencia = 12
             return vida,vida,mana,mana,ataque, agilidade, inteligencia
 
-def exibir(pl):
-    pl.abrir_menu(pl)
+def mostrar_escolha(nick,raca,sub_raca,classe,v1,v2,m1,m2,at1,ag1,in1,sex,lv,exp_a,exp_tota):
+    print('')
+    print('Status:')
+    print('')
+
+    print(f'\033[4mNome:\033[0m', end='      ')
+    print(f'{nick}')
+
+    print('\033[4mRaça:\033[0m', end='      ')
+    print(f'{raca}')
+
+    print('\033[4mSub Raça:\033[0m', end='  ')
+    print(f'{sub_raca}')
+
+    print('\033[4mClasse:\033[0m', end='    ')
+    print(f'{classe}')
+
+    print('\033[4mVida:\033[0m', end='      ')
+    print(f'{v1}/{v2}')
+
+    print('\033[4mMana:\033[0m', end='      ')
+    print(f'{m1}/{m2}')
+
+    print('\033[4mSTR:\033[0m', end='       ')
+    print(f'{at1}')
+
+    print('\033[4mDEX:\033[0m', end='       ')
+    print(f'{ag1}')
+
+    print('\033[4mINT:\033[0m', end='       ')
+    print(f'{in1}')
+
+    print('\033[4mSexo:\033[0m', end='      ')
+    print(f'{sex}')
+
+    print('\033[4mLv:\033[0m', end='        ')
+    print(f'{lv}')
+
+    print('\033[4mXP:\033[0m', end='        ')
+    print(f'{exp_a}/{exp_tota}')
+
+    print('')
+    print('')
 
 # Raças:
 p_racas = ['Humano','Raça Feral','Infernais','Goblin']

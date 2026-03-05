@@ -1,6 +1,6 @@
 from time import sleep
 from random import randint
-from Jogador import Player,exibir
+from Jogador import Player
 from inputs import *
 # JOGO
 
@@ -25,6 +25,8 @@ print('')
 if esc1 == 1:
     print('')
     p1 = Player.criar_player(None)
+    print('')
+    print(f'Bem Vindo {p1.nickname}')
     print('')
 elif esc1 == 3:
     print('Até mais')
